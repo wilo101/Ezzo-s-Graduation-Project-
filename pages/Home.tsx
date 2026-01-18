@@ -1,90 +1,177 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../types';
+import Scene3D from '../components/Scene3D';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Activity, Fingerprint, Network, ShieldCheck, Zap, Globe, Database, ScanLine } from 'lucide-react';
 
 const Home: React.FC = () => {
-  return (
-    <div className="relative overflow-hidden">
-      {/* Hero Section */}
-      <div className="relative pt-16 pb-32 flex content-center items-center justify-center min-h-[85vh]">
-        <div className="absolute top-0 w-full h-full bg-trust-900 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-trust-900 z-1"></div>
-        
-        <div className="container relative mx-auto px-4 z-10 text-center">
-            <div className="inline-block px-4 py-1 mb-6 border border-trust-500/50 rounded-full bg-trust-900/50 backdrop-blur-sm">
-                <span className="text-trust-400 text-xs font-mono tracking-[0.2em] uppercase">System v2.5 Online</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 leading-tight">
-                AI-Powered <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-trust-400 to-green-600 neon-text">Audio Forensics</span>
-            </h1>
-            <p className="mt-4 text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light">
-                Detect deepfakes, extract hidden metadata, and trace synthetic media sources with military-grade precision.
-            </p>
-            <Link 
-                to={AppRoute.ANALYZER}
-                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-md text-trust-900 bg-trust-500 hover:bg-trust-400 transition-all shadow-[0_0_20px_rgba(57,255,20,0.4)] hover:shadow-[0_0_30px_rgba(57,255,20,0.6)] transform hover:-translate-y-1"
-            >
-                START ANALYSIS
-                <svg className="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </Link>
+    const [introPhase, setIntroPhase] = useState<'spin' | 'text' | 'complete'>('spin');
 
-            {/* Stats Grid */}
-            <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-trust-800 pt-10">
-                <div className="p-4">
-                    <div className="text-3xl font-bold text-white mb-1">99.8%</div>
-                    <div className="text-sm text-gray-500 font-mono">DETECTION ACCURACY</div>
-                </div>
-                <div className="p-4">
-                    <div className="text-3xl font-bold text-white mb-1">50+</div>
-                    <div className="text-sm text-gray-500 font-mono">MODELS TRACKED</div>
-                </div>
-                <div className="p-4">
-                    <div className="text-3xl font-bold text-white mb-1">&lt;2s</div>
-                    <div className="text-sm text-gray-500 font-mono">ANALYSIS TIME</div>
-                </div>
-                <div className="p-4">
-                    <div className="text-3xl font-bold text-white mb-1">IP</div>
-                    <div className="text-sm text-gray-500 font-mono">TRACE CAPABILITY</div>
+    // Cinematic Intro Sequence
+    useEffect(() => {
+        // Phase 1: Fast Spin (Starts immediately)
+        const timer1 = setTimeout(() => {
+            setIntroPhase('text'); // Show text while still spinning fast
+        }, 500);
+
+        // Phase 2: Slow down and show rest of UI
+        const timer2 = setTimeout(() => {
+            setIntroPhase('complete');
+        }, 2500); // 2.5s total intro
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    }, []);
+
+    return (
+        <div className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex flex-col justify-center font-sans">
+
+            {/* 3D Background - High Speed during Intro */}
+            <Scene3D isHighSpeed={introPhase !== 'complete'} />
+
+            {/* Background Decor */}
+            <motion.div
+                animate={{ opacity: introPhase === 'complete' ? 1 : 0 }}
+                transition={{ duration: 1 }}
+                className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
+            >
+                <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[var(--accent-color)]/5 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px]"></div>
+            </motion.div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-16 pt-36">
+
+                {/* Intro Text Container - Always centered */}
+                <div className="min-h-[60vh] flex flex-col items-center justify-center">
+
+                    <AnimatePresence>
+                        {(introPhase === 'text' || introPhase === 'complete') && (
+                            <>
+                                {/* Title Group */}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+                                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                                    transition={{ duration: 0.8, ease: "easeOut" }}
+                                    className="text-center"
+                                >
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="inline-block px-5 py-2 mb-6 border border-[var(--accent-color)]/30 rounded-full bg-[var(--accent-color)]/10 backdrop-blur-md"
+                                    >
+                                        <span className="text-[var(--accent-color)] text-xs font-bold tracking-[0.2em] uppercase">System v2.5 Online</span>
+                                    </motion.div>
+
+                                    <h1 className="text-6xl md:text-8xl font-extrabold text-[var(--text-primary)] tracking-tight mb-8 leading-[1.1]">
+                                        AI-Powered <br />
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-color)] via-blue-400 to-purple-500 drop-shadow-2xl">
+                                            Audio Forensics
+                                        </span>
+                                    </h1>
+
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.5, duration: 1 }}
+                                        className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-3xl mx-auto font-light leading-relaxed"
+                                    >
+                                        Detect deepfakes, extract hidden metadata, and trace synthetic media sources with military-grade precision.
+                                    </motion.p>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Rest of UI - Appears after intro */}
+                    <AnimatePresence>
+                        {introPhase === 'complete' && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 50 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, delay: 0.2 }}
+                                className="w-full"
+                            >
+                                {/* CTA Button */}
+                                <div className="mt-12">
+                                    <Link
+                                        to={AppRoute.ANALYZER}
+                                        className="group relative inline-flex items-center justify-center px-10 py-5 text-white text-lg font-bold rounded-2xl bg-[var(--accent-color)] overflow-hidden transition-all shadow-xl hover:shadow-[var(--accent-color)]/50 hover:-translate-y-1"
+                                    >
+                                        <div className="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -skew-x-12"></div>
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            START ANALYSIS
+                                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                    </Link>
+                                </div>
+
+                                {/* Glass Stats Grid */}
+                                <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-12">
+                                    {[
+                                        { val: "99.8%", label: "Detection Accuracy" },
+                                        { val: "50+", label: "Models Tracked" },
+                                        { val: "<2s", label: "Analysis Time" },
+                                        { val: "IP", label: "Trace Capability" }
+                                    ].map((stat, i) => (
+                                        <motion.div
+                                            key={i}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 0.2 + (i * 0.1) }}
+                                            className="p-6 rounded-2xl bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-md hover:bg-[var(--bg-surface)] transition-colors group cursor-default shadow-[var(--glass-shadow)]"
+                                        >
+                                            <div className="text-4xl font-bold text-[var(--text-primary)] mb-2 group-hover:scale-110 transition-transform origin-center">{stat.val}</div>
+                                            <div className="text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase group-hover:text-[var(--accent-color)] transition-colors">{stat.label}</div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
+
+            {/* Feature Cards (Bottom) - Only shows after intro */}
+            {introPhase === 'complete' && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className="relative py-20 bg-[var(--bg-panel)]/30 border-y border-[var(--border-color)]/30 backdrop-blur-md mt-auto"
+                >
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8">
+                        {[
+                            { title: "Spectral Analysis", desc: "Visualize audio frequencies to spot generation artifacts invisible to the naked ear.", icon: Activity },
+                            { title: "Source ID", desc: "Identify specific AI models like ElevenLabs, FakeYou, or Meta Voice instantly.", icon: Fingerprint },
+                            { title: "Metadata & IP", desc: "Extract hidden location data and network traces from uploaded files.", icon: Network }
+                        ].map((feature, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.2 }}
+                                className="flex items-start gap-4 p-6 rounded-3xl bg-[var(--glass-bg)] hover:bg-[var(--glass-bg)] transition-colors border border-[var(--glass-border)] hover:border-[var(--accent-color)]/30 group shadow-[var(--glass-shadow)]"
+                            >
+                                <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-[var(--accent-color)]/10 flex items-center justify-center text-[var(--accent-color)] group-hover:scale-110 group-hover:bg-[var(--accent-color)] group-hover:text-white transition-all duration-300">
+                                    <feature.icon className="w-8 h-8" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-color)] transition-colors">{feature.title}</h3>
+                                    <p className="text-[var(--text-secondary)] text-sm mt-3 leading-relaxed">{feature.desc}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
         </div>
-      </div>
-      
-      {/* Features Stripe */}
-      <div className="bg-trust-800/50 py-12 border-y border-trust-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8">
-              <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-trust-900 rounded-lg flex items-center justify-center border border-trust-600 text-trust-400">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                  </div>
-                  <div>
-                      <h3 className="text-lg font-bold text-white">Spectral Analysis</h3>
-                      <p className="text-gray-400 text-sm mt-1">Visualize audio frequencies to spot generation artifacts invisible to the naked ear.</p>
-                  </div>
-              </div>
-              <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-trust-900 rounded-lg flex items-center justify-center border border-trust-600 text-trust-400">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                  </div>
-                  <div>
-                      <h3 className="text-lg font-bold text-white">Source ID</h3>
-                      <p className="text-gray-400 text-sm mt-1">Identify specific AI models like ElevenLabs, FakeYou, or Meta Voice instantly.</p>
-                  </div>
-              </div>
-              <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-trust-900 rounded-lg flex items-center justify-center border border-trust-600 text-trust-400">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  </div>
-                  <div>
-                      <h3 className="text-lg font-bold text-white">Metadata & IP</h3>
-                      <p className="text-gray-400 text-sm mt-1">Extract hidden location data and network traces from uploaded files.</p>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Home;
